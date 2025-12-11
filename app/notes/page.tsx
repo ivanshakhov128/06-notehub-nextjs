@@ -1,5 +1,5 @@
 import { QueryClient, dehydrate } from "@tanstack/react-query";
-import TansTackProvider from "../../components/TanStackProvider/TanStackProvider";
+import TanStackProvider from "../../components/TanStackProvider/TanStackProvider";
 import NotesClient from "./Notes.client";
 import { fetchNotes } from "../../lib/api";
 
@@ -14,8 +14,8 @@ export default async function NotesPage() {
   const dehydratedState = dehydrate(queryClient);
 
   return (
-    <TansTackProvider dehydratedState={dehydratedState}>
+    <TanStackProvider dehydratedState={dehydratedState}>
       <NotesClient />
-    </TansTackProvider>
+    </TanStackProvider>
   );
 }
