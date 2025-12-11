@@ -9,6 +9,8 @@ import Pagination from "../../components/Pagination/Pagination";
 import Modal from "../../components/Modal/Modal";
 import NoteForm from "../../components/NoteForm/NoteForm";
 
+import css from "./NotesPaige.module.css";
+
 const PER_PAGE = 12;
 
 export default function NotesClient() {
@@ -17,11 +19,16 @@ export default function NotesClient() {
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, isFetching, error } = useQuery({
     queryKey: ["notes", page, search],
     queryFn: () => fetchNotes({ page, perPage: PER_PAGE, search }),
     staleTime: 60_000,
-    placeholderData: { notes: [], totalPages: 0 },
+
+    // Показывать пустые данные во время загрузки новой страницы
+    placeholderData: () => ({
+      notes: [],
+      totalPages: 0,
+    }),
   });
 
   const handleCreated = () => {
@@ -30,8 +37,8 @@ export default function NotesClient() {
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      <header style={{ display: "flex", gap: 8, alignItems: "center" }}>
+    <div className={css.app}>
+      <header className={css.toolbar}>
         <SearchBox
           value={search}
           onChange={(v) => {
@@ -39,13 +46,16 @@ export default function NotesClient() {
             setSearch(v);
           }}
         />
-        <button onClick={() => setIsModalOpen(true)}>Create note +</button>
+
+        <button className={css.button} onClick={() => setIsModalOpen(true)}>
+          Create note +
+        </button>
       </header>
 
-      {isLoading && <p>Loading...</p>}
+      {(isLoading || isFetching) && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>Error loading notes</p>}
 
-      {data && <NoteList notes={data.notes} />}
+      {!isLoading && !isFetching && data && <NoteList notes={data.notes} />}
 
       {data && data.totalPages > 1 && (
         <Pagination
