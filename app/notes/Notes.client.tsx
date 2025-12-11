@@ -10,6 +10,8 @@ import Modal from "../../components/Modal/Modal";
 import NoteForm from "../../components/NoteForm/NoteForm";
 
 import css from "./NotesPaige.module.css";
+import Loading from "../loading";
+import NotesError from "./error";
 
 const PER_PAGE = 12;
 
@@ -52,8 +54,8 @@ export default function NotesClient() {
         </button>
       </header>
 
-      {(isLoading || isFetching) && <p>Loading...</p>}
-      {error && <p style={{ color: "red" }}>Error loading notes</p>}
+      {(isLoading || isFetching) && <Loading />}
+      {error && <NotesError error={error as Error} />}
 
       {!isLoading && !isFetching && data && <NoteList notes={data.notes} />}
 

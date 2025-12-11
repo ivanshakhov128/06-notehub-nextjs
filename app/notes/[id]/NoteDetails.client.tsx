@@ -7,6 +7,8 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchNoteById } from "@/lib/api";
 import { useParams } from "next/navigation";
 import type { DehydratedState } from "@tanstack/react-query";
+import Loading from "@/app/loading";
+import NoteError from "./error";
 
 interface NoteDetailsClientProps {
   dehydratedState: DehydratedState;
@@ -38,8 +40,15 @@ function NoteDetailsLoader({ noteId }: { noteId: string }) {
     queryFn: () => fetchNoteById(noteId),
   });
 
-  if (isLoading) return <p>Loading, please wait...</p>;
-  if (error || !note) return <p>Something went wrong.</p>;
+  if (isLoading) return <Loading />;
+  if (error || !note)
+    return (
+      <NoteError
+        error={
+          error instanceof Error ? error : new Error("Something went wrong")
+        }
+      />
+    );
 
   return <NoteDetails note={note} />;
 }
