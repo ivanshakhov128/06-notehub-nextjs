@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Note } from "../../types/note";
 import { deleteNote } from "../../lib/api";
-import Link from "next/link"; // імпорт Link для переходу на деталі
+import Link from "next/link";
 import css from "./NoteList.module.css";
 
 interface NoteListProps {
@@ -27,7 +27,6 @@ export default function NoteList({ notes }: NoteListProps) {
           <div className={css.footer}>
             <span className={css.tag}>{note.tag}</span>
 
-            {/* Посилання на деталі нотатки */}
             <Link href={`/notes/${note.id}`} className={css.viewDetails}>
               View details
             </Link>

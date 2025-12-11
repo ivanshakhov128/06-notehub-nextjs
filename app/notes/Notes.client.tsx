@@ -1,7 +1,7 @@
 "use client";
-
-import React, { useState } from "react";
+import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useDebounce } from "use-debounce";
 import { fetchNotes } from "../../lib/api";
 import NoteList from "../../components/NoteList/NoteList";
 import SearchBox from "../../components/SearchBox/SearchBox";
@@ -19,18 +19,15 @@ export default function NotesClient() {
   const qc = useQueryClient();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [debouncedSearch] = useDebounce(search, 500);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data, isLoading, isFetching, error } = useQuery({
-    queryKey: ["notes", page, search],
-    queryFn: () => fetchNotes({ page, perPage: PER_PAGE, search }),
+    queryKey: ["notes", page, debouncedSearch],
+    queryFn: () =>
+      fetchNotes({ page, perPage: PER_PAGE, search: debouncedSearch }),
     staleTime: 60_000,
-
-    // Показывать пустые данные во время загрузки новой страницы
-    placeholderData: () => ({
-      notes: [],
-      totalPages: 0,
-    }),
+    placeholderData: { notes: [], totalPages: 0 },
   });
 
   const handleCreated = () => {
@@ -48,7 +45,6 @@ export default function NotesClient() {
             setSearch(v);
           }}
         />
-
         <button className={css.button} onClick={() => setIsModalOpen(true)}>
           Create note +
         </button>
@@ -56,9 +52,7 @@ export default function NotesClient() {
 
       {(isLoading || isFetching) && <Loading />}
       {error && <NotesError error={error as Error} />}
-
       {!isLoading && !isFetching && data && <NoteList notes={data.notes} />}
-
       {data && data.totalPages > 1 && (
         <Pagination
           pageCount={data.totalPages}

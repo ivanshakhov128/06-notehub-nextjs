@@ -1,7 +1,6 @@
 "use client";
 
-import React from "react";
-import TanStackProvider from "../../../components/TanStackProvider/TansTackProvider";
+import TanStackProvider from "../../../components/TanStackProvider/TanStackProvider";
 import NoteDetails from "@/components/NoteDetails/NoteDetails";
 import { useQuery } from "@tanstack/react-query";
 import { fetchNoteById } from "@/lib/api";
@@ -20,7 +19,6 @@ export default function NoteDetailsClient({
   const params = useParams();
   const noteId = Array.isArray(params?.id) ? params.id[0] : params?.id || "";
 
-  // Если нет id, можно вернуть ошибку
   if (!noteId) return <p>Invalid note ID</p>;
 
   return (
@@ -38,6 +36,7 @@ function NoteDetailsLoader({ noteId }: { noteId: string }) {
   } = useQuery({
     queryKey: ["note", noteId],
     queryFn: () => fetchNoteById(noteId),
+    refetchOnMount: false,
   });
 
   if (isLoading) return <Loading />;

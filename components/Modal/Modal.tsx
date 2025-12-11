@@ -11,7 +11,6 @@ interface ModalProps {
 
 export default function Modal({ children, onClose }: ModalProps) {
   useEffect(() => {
-    // Блокировка прокрутки
     document.body.style.overflow = "hidden";
 
     const onKey = (e: KeyboardEvent) => {
@@ -25,7 +24,6 @@ export default function Modal({ children, onClose }: ModalProps) {
     };
   }, [onClose]);
 
-  // На сервере document не существует, рендерим только на клиенте
   if (typeof document === "undefined") return null;
 
   const modalRoot = document.getElementById("modal-root") ?? document.body;

@@ -32,7 +32,7 @@ export default function NoteForm({ onCancel, onCreated }: NoteFormProps) {
     mutationFn: (payload) => createNote(payload),
     onSuccess: (note) => {
       onCreated(note);
-      qc.invalidateQueries({ queryKey: ["notes"] }); // обновление списка
+      qc.invalidateQueries({ queryKey: ["notes"] });
     },
   });
 
