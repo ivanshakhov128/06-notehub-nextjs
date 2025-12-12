@@ -1,30 +1,25 @@
 "use client";
 
-import TanStackProvider from "../../../components/TanStackProvider/TanStackProvider";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import NoteDetails from "@/components/NoteDetails/NoteDetails";
 import { useQuery } from "@tanstack/react-query";
 import { fetchNoteById } from "@/lib/api";
 import { useParams } from "next/navigation";
-import type { DehydratedState } from "@tanstack/react-query";
 import Loading from "@/app/loading";
 import NoteError from "./error";
 
-interface NoteDetailsClientProps {
-  dehydratedState: DehydratedState;
-}
+const queryClient = new QueryClient();
 
-export default function NoteDetailsClient({
-  dehydratedState,
-}: NoteDetailsClientProps) {
+export default function NoteDetailsClient() {
   const params = useParams();
   const noteId = Array.isArray(params?.id) ? params.id[0] : params?.id || "";
 
   if (!noteId) return <p>Invalid note ID</p>;
 
   return (
-    <TanStackProvider dehydratedState={dehydratedState}>
+    <QueryClientProvider client={queryClient}>
       <NoteDetailsLoader noteId={noteId} />
-    </TanStackProvider>
+    </QueryClientProvider>
   );
 }
 
